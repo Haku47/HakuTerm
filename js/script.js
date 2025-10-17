@@ -28,10 +28,19 @@ const fileSystem = {
     '~/hacks': {}
 };
 
+// --- REPOSITORI PAKET BARU ---
+const packageRepo = {
+    'cmatrix': { installed: true, description: 'Simulates the falling green code effect.' },
+    'neofetch': { installed: false, description: 'A fast, highly customizable system info script.' },
+    'btop': { installed: false, description: 'Resource monitor that shows usage and stats.' },
+    'hollywood': { installed: false, description: 'Fill your console with technobabble.' }
+};
+
 // Data Manual Pages untuk perintah 'man'
 const manPages = {
     help: "Shows a list of all available commands, divided into pages. Usage: help [page_number].",
     man: "An interface to the system reference manuals. Usage: man [command].",
+    ds: "Dream Shell package manager (requires sudo). Usage: sudo ds [install|uninstall|purge] [package].",
     echo: "Display a line of text. Usage: echo [text to display].",
     whoami: "Displays information about the current user's identity and skills.",
     who: "Show who is logged on to the system (simulated).",
@@ -263,23 +272,89 @@ const commands = {
     sudo: (...args) => {
         const commandToRun = args.shift();
         if (!commandToRun) return "usage: sudo <command>";
-        if (!commands[commandToRun]) return `sudo: ${commandToRun}: command not found`;
-
+        
         printOutput(`[sudo] password for ${user}:`);
         
+        // --- LOGIKA BARU: Package Manager 'ds' ---
+        if (commandToRun === 'ds') {
+            return commands.ds(...args);
+        }
+        // ------------------------------------
+
+        if (!commands[commandToRun]) return `sudo: ${commandToRun}: command not found`;
+
         if (commandToRun === 'rm') {
             const targetName = args[0];
             if (!targetName) return "Usage: rm [file_or_directory_name]";
             const dirPath = `~/${targetName}`;
             if (currentDir === '~' && fileSystem[dirPath]) {
                 delete fileSystem[dirPath];
-                printOutput(`[SUCCESS] Directory '${targetName}' forcefully removed.`);
-                return '';
+                return `[SUCCESS] Directory '${targetName}' forcefully removed.`;
             }
         }
         
         const result = commands[commandToRun];
         return typeof result === 'function' ? result(...args) : result;
+    },
+
+    // --- PERINTAH BARU: DREAM SHELL (ds) Package Manager ---
+    ds: (action, pkgName) => {
+        if (!action || !pkgName) {
+            return `Usage: sudo ds [install|uninstall|purge] [package_name]`;
+        }
+    
+        const pkg = packageRepo[pkgName];
+    
+        switch (action) {
+            case 'install':
+                if (!pkg) return `[ERROR] Package '${pkgName}' not found in repository.`;
+                if (pkg.installed) return `[INFO] Package '${pkgName}' is already installed.`;
+                
+                printOutput(`[INFO] Fetching package details for '${pkgName}'...`);
+                let progress = 0;
+                const id = `install-${Date.now()}`;
+                const progressLine = document.createElement('div');
+                progressLine.id = id;
+                progressLine.classList.add('output');
+                outputContainer.appendChild(progressLine);
+    
+                const interval = setInterval(() => {
+                    progress += 20;
+                    const bar = '[' + '#'.repeat(progress / 10) + ' '.repeat(10 - (progress / 10)) + ']';
+                    progressLine.textContent = `Installing ${pkgName} ${bar} ${progress}%`;
+                    terminal.scrollTop = terminal.scrollHeight;
+    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        progressLine.textContent = `Installing ${pkgName} ${bar} 100%`;
+                        pkg.installed = true;
+                        printOutput(`[SUCCESS] Successfully installed '${pkgName}'.`);
+                    }
+                }, 400);
+    
+                return ' ';
+    
+            case 'uninstall':
+            case 'purge':
+                if (!pkg) return `[ERROR] Package '${pkgName}' not found.`;
+                if (!pkg.installed) return `[INFO] Package '${pkgName}' is not installed.`;
+                
+                printOutput(`[INFO] Removing package '${pkgName}'...`);
+                setTimeout(() => {
+                    pkg.installed = false;
+                    if (action === 'purge') {
+                        printOutput(`[INFO] Purging configuration files for '${pkgName}'...`);
+                    }
+                    setTimeout(() => {
+                        printOutput(`[SUCCESS] Successfully removed '${pkgName}'.`);
+                    }, 800);
+                }, 1000);
+                
+                return ' ';
+    
+            default:
+                return `[ERROR] Action '${action}' not recognized. Use install, uninstall, or purge.`;
+        }
     },
     
     uname: (flag) => {
