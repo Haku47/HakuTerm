@@ -1,0 +1,163 @@
+/* -----------------------------------------------------------------
+   HAKUTERM STYLES: MODERN HACKER AESTHETIC V3 (Refined Colors)
+   ----------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+/* Variabel CSS untuk kemudahan perubahan tema */
+:root {
+    --bg-dark: #000000; /* Solid Black */
+    /* WARNA BARU: Hijau yang lebih lembut dan modern */
+    --neon-green: #0ae21c;
+    /* GLOW BARU: Efek glow yang lebih halus */
+    --glow-color: rgba(0, 0, 0, 0.5); 
+    --font-size-base: 1.1rem;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--neon-green);
+    font-family: 'Fira Code', monospace;
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    
+    /* Latar belakang bertema kode/sinematik dari URL eksternal */
+    background-image: url();
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    
+    overflow: hidden; 
+}
+
+/* --- PRELOADER / BOOT-UP SPINNER --- */
+#preloader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background-color: var(--bg-dark);
+    transition: opacity 0.8s ease-out; /* Untuk efek fade-out */
+}
+
+#preloader .spinner {
+    width: 3em; /* Spinner lebih besar untuk preloading */
+    height: 3em;
+    border-width: 0.25em;
+}
+
+#preloader-text {
+    margin-top: 1.5em;
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px var(--glow-color);
+    /* Animasi denyut untuk efek loading yang lebih hidup */
+    animation: pulse 2s infinite ease-in-out;
+}
+/* ----------------------------------- */
+
+
+#terminal {
+    background-color: rgba(0, 0, 0, 0.4); 
+    padding: 2rem 1rem;
+    height: 100vh;
+    overflow-y: auto; 
+    box-sizing: border-box;
+    /* Shadow disesuaikan dengan warna baru */
+    box-shadow: 0 0 15px rgba(37, 213, 143, 0.4),
+                0 0 30px rgba(37, 213, 143, 0.15);
+    
+    /* Awalnya disembunyikan, akan muncul dengan transisi */
+    opacity: 0;
+    transition: opacity 0.8s ease-in;
+}
+
+.input-line {
+    display: flex;
+    align-items: flex-start;
+}
+
+.prompt {
+    color: var(--neon-green);
+    font-weight: bold;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+    text-shadow: 0 0 5px var(--glow-color); 
+}
+
+/* --- PERUBAHAN UTAMA UNTUK KURSOR --- */
+#command-input {
+    background: none;
+    border: none;
+    color: var(--neon-green);
+    font-family: inherit;
+    font-size: inherit;
+    flex-grow: 1;
+    outline: none;
+    padding: 0;
+    /* 1. Mengaktifkan kembali kursor asli dan memberinya warna tema */
+    caret-color: var(--neon-green); 
+    text-shadow: 0 0 5px var(--glow-color);
+}
+
+.output {
+    white-space: pre-wrap;
+    word-break: break-all;
+    text-shadow: 0 0 4px var(--glow-color); 
+    transition: color 0.3s ease;
+}
+
+/* --- KUSTOMISASI: Warna Khusus untuk Output Filmik --- */
+.output:contains("SUCCESS"), .output:contains("[SUCCESS]"), .output:contains("RESULT") {
+    color: #45f5b4; /* Warna sukses yang lebih terang dan serasi */
+    font-weight: bold;
+}
+.output:contains("ERROR"), .output:contains("FAIL"), .output:contains("timeout") {
+    color: #ff4d4d; /* Merah yang sedikit lebih lembut */
+    font-weight: bold;
+}
+.output:contains("[INFO]") {
+    color: #87CEFA; /* Biru langit yang lebih jelas */
+}
+
+/* 2. Menghapus kursor balok (█) buatan yang lama */
+/* Blok #command-input:focus::after dan @keyframes blink dihapus */
+
+
+/* --- SPINNER NEON MODERN --- */
+.spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 0.15em solid var(--neon-green);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+.spinner-neon {
+    box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--glow-color);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- ANIMASI BARU UNTUK PRELOADER TEXT --- */
+@keyframes pulse {
+    0% { text-shadow: 0 0 8px var(--glow-color); opacity: 1; }
+    50% { text-shadow: 0 0 12px var(--glow-color); opacity: 0.7; }
+    100% { text-shadow: 0 0 8px var(--glow-color); opacity: 1; }
+}
+
+
+/* Media Query untuk Mobile */
+@media (max-width: 600px) {
+    body { font-size: 1rem; padding: 0.5rem; }
+    #terminal { padding: 1rem 0.5rem; }
+}
+
