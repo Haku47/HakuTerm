@@ -20,7 +20,7 @@ let currentFile = null;
 // Simulated File System (Isi file virtual)
 const fileSystem = {
     '~': {
-        'whoami.txt': "This is a file about me. I am Haku, a Front End Developer and Linux enthusiast.",
+        'whoami.txt': "This is a file about me. I am Haku, a JS learner and Linux enthusiast.",
         'help.txt': 'Type "help" to see all commands.',
         'notes.md': "# Project Notes\n- Use 'nano notes.md' to edit this file.\n- Use 'cat notes.md' to view its contents.",
     },
@@ -571,8 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showPrompt();
         input.focus();
-        const welcomeMessage = `Welcome to HakuTerm v1.0.\nType 'help' to see available commands.`;
+        const welcomeMessage = `Welcome to HakuTerm v1.0.\nType 'help' to see available commands.\n\nDISCLAIMER: This terminal is a simulation created for educational and entertainment purposes only.`;
         typeEffect(welcomeMessage, 25);
     }, 2500); // Durasi preloader
 });
-
